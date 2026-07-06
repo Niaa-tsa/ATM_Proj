@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/ATM_Project/">
+    <Project Path="Application/Application.csproj" />
+    <Project Path="Domain/Domain.csproj" />
+    <Project Path="Infrastructure/Infrastructure.csproj" />
+    <Project Path="UI/UI.csproj" />
+  </Folder>
+</Solution>
