@@ -8,7 +8,7 @@ namespace UI.Menus
     {
         public void Show()
         {
-            Console.WriteLine("--ATM SYSTEM--");
+            Console.WriteLine("--ATM SYSTEM-- if changed ");
             Console.WriteLine("1. Register");
             Console.WriteLine("2. Login");
             Console.WriteLine("0. Exit");
