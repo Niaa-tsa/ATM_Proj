@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("ATM System started!");
+            Console.WriteLine("ATM System starteed!");
         }
     }
 }
