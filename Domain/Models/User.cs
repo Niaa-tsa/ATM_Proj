@@ -5,11 +5,13 @@ using System.Text;
 
 namespace Domain.Models
 {
-    public abstract class User
+    public  class User
     {
-        public int Id { get; protected set; }
-        public string Username { get; protected set; }
-        public string Password { get; protected set; }
-        public Role Role { get; protected set; }
+        public int Id { get;  set; }
+        public string Username { get;  set; }
+        public string Password { get;  set; }
+        public Role Role { get;  set; }
+        public bool IsVerified { get;  set; }
+        public string VerificationCode { get;  set; }
     }
 }

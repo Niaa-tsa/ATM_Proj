@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Domain.Helpers
 {
-    public static class ValidationHelper
+    public  class ValidationHelper
     {
-        public static bool IsPositive(decimal amount)
+        public  bool IsPositive(decimal amount)
         {
             return amount > 0;
         }

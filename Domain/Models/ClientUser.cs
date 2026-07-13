@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace Domain.Models
     {
         public decimal Balance { get; protected set; }
 
-        public ClientUser(int id, string username, string password, decimal balance)
+        public ClientUser(int id, string username, string password, decimal balance, Role role)
         {
             Id = id;
             Username = username;
