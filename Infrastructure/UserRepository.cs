@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Linq;
+using System.IO;
 namespace Infrastructure
 {
     public class UserRepository : IUserDataManager
@@ -51,11 +52,17 @@ namespace Infrastructure
 
             return user;
         }
-
-        public User GetUserByUsername(string username)
+        public User GetLastLoggedInUser()
         {
             var users = GetAllUsers();
-            return users.FirstOrDefault(x => x.Username == username);
+            User user = users.OrderBy( x => x.LastLogin).LastOrDefault();
+            return user;
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            var users = GetAllUsers();
+            return users.FirstOrDefault(x => x.Email == email);
         }
 
         public List<User> GetUsers()
@@ -63,7 +70,7 @@ namespace Infrastructure
             return new List<User>();
         }
 
-        public void SaveUsers(List<User> users)
+        public void SaveChanges(List<User> users)
         {
             File.Delete(_filePath);
             File.AppendAllLines(_filePath, users.Select(x => JsonSerializer.Serialize(x)));
@@ -77,7 +84,7 @@ namespace Infrastructure
             if (index != -1)
             {
                 users[index] = user;
-                SaveUsers(users);
+                SaveChanges(users);
             }
         }
     }

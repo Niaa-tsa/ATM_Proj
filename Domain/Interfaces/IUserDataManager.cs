@@ -9,9 +9,12 @@ namespace Domain.Interfaces
     {
         List<User> GetAllUsers();
         User GetUserById(int id);
-        User GetUserByUsername(string username);
+        User GetUserByEmail(string email);
         void CreateUser(User user);
         void DeleteUser(int id);
         void UpdateUser(User user);
+        void SaveChanges(List<User> users);
+        public User GetLastLoggedInUser();
     }
+
 }

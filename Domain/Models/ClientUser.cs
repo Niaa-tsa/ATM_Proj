@@ -18,8 +18,23 @@ namespace Domain.Models
             Balance = balance;
         }
 
-        public void Deposit(decimal amount) { }
+        public void Deposit(decimal amount)
+        {
+            if (amount <= 0)
+                throw new Exception("Amount must be positive");
 
-        public void Withdraw(decimal amount) { }
+            Balance += amount;
+        }
+
+        public void Withdraw(decimal amount)
+        {
+            if (amount <= 0)
+                throw new Exception("Amount must be positive");
+
+            if (amount > Balance)
+                throw new Exception("Not enough balance");
+
+            Balance -= amount;
+        }
     }
 }
