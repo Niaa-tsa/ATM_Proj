@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Interfaces;
 using Infrastructure;
+using Domain.Exceptions;
 namespace Application.Services
 {
     public class LoanService 
@@ -25,8 +26,7 @@ namespace Application.Services
         {
 
             if (amount <= 0)
-                throw new Exception(
-                "Invalid amount");
+                throw new InvalidAmountException("Amount must be greater than 0");
 
 
             LoanRequest loan =
@@ -67,6 +67,7 @@ namespace Application.Services
         }
         public void ApproveLoan(int id)
         {
+
             var loans = _loanRepository.GetAll();
 
             var loan = loans.FirstOrDefault(x => x.Id == id);

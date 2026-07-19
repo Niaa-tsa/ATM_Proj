@@ -1,0 +1,1 @@
+{"Id":1,"Username":"admin","Email":"admin@gmail.com","Password":"$2a$11$z4/IAk39jL/tkwMcuJzqC.fJFl40kqN0/6VNW1AixDqRFB9SzD8hW","Role":1,"IsVerified":true,"VerificationCode":null,"Balance":11,"LastLogin":"2026-07-19T16:33:19.6080376+04:00"}

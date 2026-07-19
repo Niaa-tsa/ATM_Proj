@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,19 +21,18 @@ namespace Domain.Models
 
         public void Deposit(decimal amount)
         {
-            if (amount <= 0)
-                throw new Exception("Amount must be positive");
-
+            if(amount <= 0)
+    throw new InvalidAmountException("Amount must be positive");
             Balance += amount;
         }
 
         public void Withdraw(decimal amount)
         {
-            if (amount <= 0)
-                throw new Exception("Amount must be positive");
 
+            if (amount <= 0)
+                throw new InvalidAmountException("Amount must be positive");
             if (amount > Balance)
-                throw new Exception("Not enough balance");
+                throw new InsufficientFundsException("Not enough balance");
 
             Balance -= amount;
         }

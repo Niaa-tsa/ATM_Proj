@@ -1,40 +1,63 @@
-﻿using Application.Services;
+﻿using Application.Interfaces;
+using Application.Services;
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure;
+using Infrastructure.Data;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using UI.Menus;
 
-namespace UI
-{
-    internal class Program
+    namespace UI
     {
-        static void Main(string[] args)
+        internal class Program
         {
+            static void Main(string[] args)
             {
-                IUserDataManager repository =
-                    new UserRepository();
+
+                
+                UserRepository repository = new UserRepository();
 
 
-                EmailService emailService =
-                    new EmailService();
+                
+                DataInitializer.CreateAdmin(repository);
 
 
+
+                
+                EmailService emailService = new EmailService();
+
+
+                ILoggerService logger = new LoggerService();
+
+                ITransactionRepository transactionRepository =
+                    new TransactionRepository();
+
+
+
+                
                 UserService userService =
                     new UserService(
                         repository,
-                        emailService
+                        emailService,
+                        transactionRepository,
+                        logger
                     );
 
-                LoanRepository loanRepository = new LoanRepository();
+
+
+                LoanRepository loanRepository =
+                    new LoanRepository();
+
+
 
                 LoanService loanService =
                     new LoanService(
                         loanRepository,
                         repository
                     );
+
 
 
                 MainMenu menu =
@@ -48,4 +71,3 @@ namespace UI
             }
         }
     }
-}

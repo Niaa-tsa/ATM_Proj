@@ -12,7 +12,6 @@ namespace Application.Services
     {
         string path = @"C:\Users\Nia Tsalkalamanidze\Desktop\N\Step\ATM_Project\Domain\Loggs\Loggs.txt";
 
-
         public void Log(string message)
         {
             string ip = GetUserIp();

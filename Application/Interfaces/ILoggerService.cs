@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Application.Interfaces
 {
-    public class ILoggerService
+    public interface ILoggerService
     {
+     void Log(string message);
     }
 }

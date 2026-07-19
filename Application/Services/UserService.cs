@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces;
+using Domain.Enums;
+using Domain.Helpers;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -11,43 +13,57 @@ namespace Application.Services
     {
         private readonly IUserDataManager _userDataManager;
         private readonly EmailService _emailService;
-        public UserService(IUserDataManager userDataManager, EmailService emailService)
+        private readonly ITransactionRepository _transactionRepository;
+        private readonly ILoggerService _logger;
+        public UserService(
+     IUserDataManager userDataManager,
+     EmailService emailService,
+     ITransactionRepository transactionRepository,
+     ILoggerService logger)
         {
             _userDataManager = userDataManager;
             _emailService = emailService;
-            _emailService = new EmailService();
+            _transactionRepository = transactionRepository;
+            _logger = logger;
         }
         public void RegisterUser(string username, string email, string password)
         {
+            if (!ValidationHelper.IsNotEmpty(username))
+                throw new Exception("Username is required");
+
+            if (!ValidationHelper.IsValidEmail(email))
+                throw new Exception("Invalid email");
+
+            if (!ValidationHelper.IsValidPassword(password))
+                throw new Exception("Password must be at least 4 characters");
+
             var existingUser = _userDataManager.GetUserByEmail(email);
             if (existingUser != null)
-            {
-                throw new Exception("user with this email already exists");
-            }
+                throw new Exception("User already exists");
+
 
             var verificationCode = new Random().Next(1000, 9999).ToString();
+
             var users = _userDataManager.GetAllUsers();
             int newId = users.Count == 0 ? 1 : users.Max(x => x.Id) + 1;
+
+
             var newUser = new User
             {
                 Id = newId,
                 Username = username,
-                Password = BCrypt.Net.BCrypt.HashPassword(password),
-                IsVerified = false,
-                VerificationCode = verificationCode,
                 Email = email,
+                Password = BCrypt.Net.BCrypt.HashPassword(password),
+                Role = Role.Client,
+                IsVerified = false,
+                VerificationCode = verificationCode
             };
+
             _userDataManager.CreateUser(newUser);
+
             SendVerificationCode(email, verificationCode);
-            //   _userDataManager.UpdateUser(_userDataManager.GetAllUsers);
+            _logger.Log($"New user registered: {email}");
         }
-
-      
-
-        // public void RegisterUser(string username, string password, string v)
-        // {
-        //   throw new NotImplementedException();
-        // }
 
         public void SendVerificationCode(string email, string verificationCode)
         {
@@ -78,6 +94,9 @@ namespace Application.Services
                 {
                     us.LastLogin = DateTime.Now;
                     _userDataManager.UpdateUser(us);
+
+                    _logger.Log($"User logged in: {email}");
+
                     return us;
                 }
             }
@@ -104,29 +123,53 @@ namespace Application.Services
         }
         public void Deposit(string email, decimal amount)
         {
+            if (!ValidationHelper.IsPositive(amount))
+                throw new Exception("Amount must be positive");
+
             var user = _userDataManager.GetUserByEmail(email);
+            if (user == null)
+                throw new Exception("User not found");
 
-            if (user is ClientUser client)
+            user.Balance += amount;
+
+            _userDataManager.UpdateUser(user);
+
+            _transactionRepository.Add(new Transaction
             {
-                client.Deposit(amount);
-                _userDataManager.UpdateUser(client);
-                return;
-            }
-
-            throw new Exception("User is not a client");
+                UserId = user.Id,
+                Amount = amount,
+                Type = "Deposit",
+                Date = DateTime.Now
+            });
+            _logger.Log($"{email} deposited {amount}");
         }
         public void Withdraw(string email, decimal amount)
         {
+            if (!ValidationHelper.IsPositive(amount))
+                throw new Exception("Amount must be positive");
+
             var user = _userDataManager.GetUserByEmail(email);
 
-            if (user is ClientUser client)
-            {
-                client.Withdraw(amount);
-                _userDataManager.UpdateUser(client);
-                return;
-            }
+            if (user == null)
+                throw new Exception("User not found");
 
-            throw new Exception("User is not a client");
+            if (amount > user.Balance)
+                throw new Exception("Not enough balance");
+
+            user.Balance -= amount;
+
+            _userDataManager.UpdateUser(user);
+
+            _transactionRepository.Add(new Transaction
+            {
+                UserId = user.Id,
+                Amount = amount,
+                Type = "Withdraw",
+                Date = DateTime.Now
+            });
+            _logger.Log($"{email} withdrew {amount}");
         }
+
+
     }
 }

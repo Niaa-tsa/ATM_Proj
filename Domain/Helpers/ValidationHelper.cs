@@ -6,9 +6,26 @@ namespace Domain.Helpers
 {
     public  class ValidationHelper
     {
-        public  bool IsPositive(decimal amount)
-        {
-            return amount > 0;
+            public static bool IsPositive(decimal amount)
+            {
+                return amount > 0;
+            }
+
+            public static bool IsValidEmail(string email)
+            {
+                return !string.IsNullOrWhiteSpace(email) && email.Contains("@");
+            }
+
+            public static bool IsValidPassword(string password)
+            {
+                return !string.IsNullOrWhiteSpace(password) && password.Length >= 4;
+            }
+
+            public static bool IsNotEmpty(string value)
+            {
+                return !string.IsNullOrWhiteSpace(value);
+            }
         }
     }
-}
+
+
