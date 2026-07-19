@@ -1,0 +1,9 @@
+﻿[07/19/2026 7:06:52 PM - IP 192.168.31.37]User logged in: tsalkalamanidzenia93@gmail.com
+[07/19/2026 7:07:08 PM - IP 192.168.31.37]User tsalkalamanidzenia93@gmail.com logged out
+[07/19/2026 7:07:26 PM - IP 192.168.31.37]User logged in: admin@gmail.com
+[07/19/2026 7:09:12 PM - IP 192.168.31.37]User logged in: tsalkalamanidzenia93@gmail.com
+[07/19/2026 7:09:58 PM - IP 192.168.31.37]tsalkalamanidzenia93@gmail.com deposited 50
+[07/19/2026 7:10:29 PM - IP 192.168.31.37]tsalkalamanidzenia93@gmail.com withdrew 20
+[07/19/2026 7:10:51 PM - IP 192.168.31.37]tsalkalamanidzenia93@gmail.com withdrew 100
+[07/19/2026 7:13:16 PM - IP 192.168.31.37]User logged in: tsalkalamanidzenia93@gmail.com
+[07/19/2026 7:13:40 PM - IP 192.168.31.37]tsalkalamanidzenia93@gmail.com withdrew 10

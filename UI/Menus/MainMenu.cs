@@ -1,5 +1,6 @@
 ﻿using Application.Services;
 using Domain.Enums;
+using Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -115,7 +116,11 @@ namespace UI.Menus
 
             if (user.Role == Role.Admin)
             {
-                AdminMenu menu = new AdminMenu(_loanService);
+                AdminMenu menu =
+     new AdminMenu(
+         _loanService,
+         new UserRepository()
+     );
 
                 menu.Show();
             }

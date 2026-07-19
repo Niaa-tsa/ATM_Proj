@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Enums;
+using Domain.Exceptions;
 using Domain.Helpers;
 using Domain.Interfaces;
 using Domain.Models;
@@ -13,17 +14,14 @@ namespace Application.Services
     {
         private readonly IUserDataManager _userDataManager;
         private readonly EmailService _emailService;
-        private readonly ITransactionRepository _transactionRepository;
         private readonly ILoggerService _logger;
         public UserService(
      IUserDataManager userDataManager,
      EmailService emailService,
-     ITransactionRepository transactionRepository,
      ILoggerService logger)
         {
             _userDataManager = userDataManager;
             _emailService = emailService;
-            _transactionRepository = transactionRepository;
             _logger = logger;
         }
         public void RegisterUser(string username, string email, string password)
@@ -48,21 +46,19 @@ namespace Application.Services
             int newId = users.Count == 0 ? 1 : users.Max(x => x.Id) + 1;
 
 
-            var newUser = new User
-            {
-                Id = newId,
-                Username = username,
-                Email = email,
-                Password = BCrypt.Net.BCrypt.HashPassword(password),
-                Role = Role.Client,
-                IsVerified = false,
-                VerificationCode = verificationCode
-            };
+            var newUser = new ClientUser(
+      newId,
+      username,
+      email,
+      BCrypt.Net.BCrypt.HashPassword(password),
+      0
+  );
 
+            newUser.IsVerified = false;
+            newUser.VerificationCode = verificationCode;
             _userDataManager.CreateUser(newUser);
-
-            SendVerificationCode(email, verificationCode);
             _logger.Log($"New user registered: {email}");
+            SendVerificationCode(email, verificationCode);
         }
 
         public void SendVerificationCode(string email, string verificationCode)
@@ -74,7 +70,7 @@ namespace Application.Services
             User user = _userDataManager.GetUserByEmail(email);
             if (user == null)
             {
-                Console.WriteLine("user not found");
+       
                 throw new ArgumentException("user not found ");
             }
             if (user.VerificationCode == verificationCode)
@@ -108,6 +104,7 @@ namespace Application.Services
             User us = _userDataManager.GetUserByEmail(email);
             us.LastLogin = null;
             _userDataManager.UpdateUser(us);
+            _logger.Log($"User {email} logged out");
 
         }
         public decimal GetBalance(string email)
@@ -127,46 +124,49 @@ namespace Application.Services
                 throw new Exception("Amount must be positive");
 
             var user = _userDataManager.GetUserByEmail(email);
+
             if (user == null)
                 throw new Exception("User not found");
 
-            user.Balance += amount;
 
-            _userDataManager.UpdateUser(user);
-
-            _transactionRepository.Add(new Transaction
+            if (user is ClientUser client)
             {
-                UserId = user.Id,
-                Amount = amount,
-                Type = "Deposit",
-                Date = DateTime.Now
-            });
+                client.Deposit(amount);
+
+                _userDataManager.UpdateUser(client);
+            }
+            else
+            {
+                throw new Exception("Only clients can deposit");
+            }
+
+
             _logger.Log($"{email} deposited {amount}");
         }
         public void Withdraw(string email, decimal amount)
         {
             if (!ValidationHelper.IsPositive(amount))
-                throw new Exception("Amount must be positive");
+                throw new InvalidAmountException("Amount must be positive");
+
 
             var user = _userDataManager.GetUserByEmail(email);
 
             if (user == null)
                 throw new Exception("User not found");
 
-            if (amount > user.Balance)
-                throw new Exception("Not enough balance");
 
-            user.Balance -= amount;
-
-            _userDataManager.UpdateUser(user);
-
-            _transactionRepository.Add(new Transaction
+            if (user is ClientUser client)
             {
-                UserId = user.Id,
-                Amount = amount,
-                Type = "Withdraw",
-                Date = DateTime.Now
-            });
+                client.Withdraw(amount);
+
+                _userDataManager.UpdateUser(client);
+            }
+            else
+            {
+                throw new Exception("Only clients can withdraw");
+            }
+
+
             _logger.Log($"{email} withdrew {amount}");
         }
 

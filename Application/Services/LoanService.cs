@@ -1,18 +1,19 @@
-﻿using Domain.Models;
-using Domain.Interfaces;
-using Infrastructure;
+﻿using Domain.Enums;
 using Domain.Exceptions;
+using Domain.Interfaces;
+using Domain.Models;
+using Infrastructure;
 namespace Application.Services
 {
     public class LoanService 
     {
-        private readonly LoanRepository _loanRepository;
+        private readonly ILoanRepository _loanRepository;
         private readonly IUserDataManager _userRepository;
 
 
         public LoanService(
-            LoanRepository loanRepository,
-            IUserDataManager userRepository)
+         ILoanRepository loanRepository,
+         IUserDataManager userRepository)
         {
             _loanRepository = loanRepository;
             _userRepository = userRepository;
@@ -38,8 +39,7 @@ namespace Application.Services
                 UserId = userId,
 
                 Amount = amount,
-
-                Status = "Pending"
+                Status = LoanStatus.Pending
             };
 
 
@@ -60,7 +60,7 @@ namespace Application.Services
                 throw new Exception("Loan not found");
 
 
-            loan.Status = "Rejected";
+            loan.Status = LoanStatus.Rejected;
 
 
             _loanRepository.Save(loans);
@@ -84,14 +84,21 @@ namespace Application.Services
             if (user == null)
                 throw new Exception("User not found");
 
+            if (user is ClientUser client)
+            {
+                client.Deposit(loan.Amount);
+                _userRepository.UpdateUser(client);
+            }
+            else
+            {
+                throw new Exception("User is not client");
+            }
 
-            user.Balance += loan.Amount;
+
+            loan.Status = LoanStatus.Approved;
 
 
-            loan.Status = "Approved";
-
-
-            _userRepository.UpdateUser(user);
+          
 
             _loanRepository.Save(loans);
         }

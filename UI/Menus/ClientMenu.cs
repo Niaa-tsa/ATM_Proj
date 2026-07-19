@@ -12,7 +12,7 @@ namespace UI.Menus
         private readonly UserService _userService;
         private readonly User _currentUser;
         private readonly LoanService _loanService;
-        private readonly ITransactionRepository _transactionRepository;
+       
         public ClientMenu(
      UserService userService,
      LoanService loanService,
@@ -33,7 +33,6 @@ namespace UI.Menus
                 Console.WriteLine("3. Withdraw");
                 Console.WriteLine("4. Logout");
                 Console.WriteLine("5. Request Loan");
-                Console.WriteLine("6. View Transactions");
                 Console.Write("Choose option: ");
 
                 string choice = Console.ReadLine();
@@ -63,9 +62,7 @@ namespace UI.Menus
                         case "5":
                             RequestLoan();
                             break;
-                        case "6":
-                            ViewTransactions();
-                            break;
+                      
 
                         default:
                             Console.WriteLine("Wrong option");
@@ -83,8 +80,11 @@ namespace UI.Menus
 
         private void CheckBalance()
         {
+            decimal balance =
+                _userService.GetBalance(_currentUser.Email);
+
             Console.WriteLine(
-                $"Balance: {_currentUser.Balance}"
+                $"Balance: {balance}"
             );
         }
 
@@ -93,7 +93,11 @@ namespace UI.Menus
         {
             Console.Write("Amount: ");
 
-            decimal amount = decimal.Parse(Console.ReadLine());
+            if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
+            {
+                Console.WriteLine("Invalid amount");
+                return;
+            }
 
             _userService.Deposit(
                 _currentUser.Email,
@@ -108,7 +112,11 @@ namespace UI.Menus
         {
             Console.Write("Amount: ");
 
-            decimal amount = decimal.Parse(Console.ReadLine());
+            if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
+            {
+                Console.WriteLine("Invalid amount");
+                return;
+            }
 
             _userService.Withdraw(
                 _currentUser.Email,
@@ -121,8 +129,11 @@ namespace UI.Menus
         {
             Console.Write("Loan amount: ");
 
-            decimal amount =
-            decimal.Parse(Console.ReadLine());
+            if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
+            {
+                Console.WriteLine("Invalid amount");
+                return;
+            }
 
 
             _loanService.RequestLoan(
@@ -134,16 +145,7 @@ namespace UI.Menus
             Console.WriteLine(
             "Loan request sent");
         }
-        private void ViewTransactions()
-        {
-            var transactions = _transactionRepository
-                .GetAll()
-                .Where(x => x.UserId == _currentUser.Id);
-
-            foreach (var t in transactions)
-            {
-                Console.WriteLine($"{t.Type} | {t.Amount} | {t.Date}");
-            }
+       
         }
     }
-}
+

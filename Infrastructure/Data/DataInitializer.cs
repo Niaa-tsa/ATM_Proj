@@ -16,15 +16,12 @@ namespace Infrastructure.Data
                 return;
 
 
-            User admin = new User
-            {
-                Id = 1,
-                Username = "admin",
-                Email = "admin@gmail.com",
-                Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
-                Role = Role.Admin,
-                IsVerified = true
-            };
+            AdminUser admin = new AdminUser(
+     1,
+     "admin",
+     "admin@gmail.com",
+     BCrypt.Net.BCrypt.HashPassword("admin123")
+ );
 
 
             repository.CreateUser(admin);

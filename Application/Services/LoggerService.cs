@@ -10,7 +10,7 @@ namespace Application.Services
 {
     public class LoggerService : ILoggerService
     {
-        string path = @"C:\Users\Nia Tsalkalamanidze\Desktop\N\Step\ATM_Project\Domain\Loggs\Loggs.txt";
+        string path = @"C:\Users\Nia Tsalkalamanidze\Desktop\N\Step\ATM_Project\Infrastructure\Data\Logs.txt";
 
         public void Log(string message)
         {

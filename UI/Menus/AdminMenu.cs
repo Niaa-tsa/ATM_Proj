@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,44 +8,53 @@ namespace UI.Menus
 {
     public class AdminMenu
     {
-            public void Show()
+        public void Show()
+        {
+
+            while (true)
             {
 
-                while (true)
-                {
-
-                    Console.WriteLine("\nADMIN MENU");
-
-                    Console.WriteLine("1. View Loans");
-                    Console.WriteLine("2. Approve Loan");
-                    Console.WriteLine("3. Reject Loan");
-                    Console.WriteLine("4. Logout");
+                Console.WriteLine("1. View Loans");
+                Console.WriteLine("2. Approve Loan");
+                Console.WriteLine("3. Reject Loan");
+                Console.WriteLine("4. View Users");
+                Console.WriteLine("5. Delete User");
+                Console.WriteLine("6. Logout");
 
 
-                    string choice =
+                string choice =
                     Console.ReadLine();
 
 
-                    switch (choice)
-                    {
+                switch (choice)
+                {
 
-                        case "1":
-                            ViewLoans();
-                            break;
-
-
-                        case "2":
-                            ApproveLoan();
-                            break;
+                    case "1":
+                        ViewLoans();
+                        break;
 
 
-                        case "3":
-                            RejectLoan();
-                            break;
+                    case "2":
+                        ApproveLoan();
+                        break;
 
 
-                        case "4":
-                            return;
+                    case "3":
+                        RejectLoan();
+                        break;
+
+                    case "4":
+                        ViewUsers();
+                        break;
+
+
+                    case "5":
+                        DeleteUser();
+                        break;
+
+
+                    case "6":
+                        return;
 
                     default:
                         Console.WriteLine("Wrong option");
@@ -52,15 +62,19 @@ namespace UI.Menus
 
                 }
 
-                }
+            }
 
         }
         private readonly LoanService _loanService;
+        private readonly IUserDataManager _userRepository;
 
 
-        public AdminMenu(LoanService loanService)
+        public AdminMenu(
+            LoanService loanService,
+            IUserDataManager userRepository)
         {
             _loanService = loanService;
+            _userRepository = userRepository;
         }
         private void ViewLoans()
         {
@@ -81,11 +95,13 @@ namespace UI.Menus
         {
             Console.Write("Loan ID: ");
 
-            int id = int.Parse(Console.ReadLine());
-
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID");
+                return;
+            }
 
             _loanService.ApproveLoan(id);
-
 
             Console.WriteLine("Loan approved");
         }
@@ -96,13 +112,43 @@ namespace UI.Menus
         {
             Console.Write("Loan ID: ");
 
-            int id = int.Parse(Console.ReadLine());
-
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID");
+                return;
+            }
 
             _loanService.RejectLoan(id);
 
-
             Console.WriteLine("Loan rejected");
+        }
+
+        private void ViewUsers()
+        {
+            var users = _userRepository.GetAllUsers();
+
+
+            foreach (var user in users)
+            {
+                Console.WriteLine(
+                    $"ID: {user.Id} | Username: {user.Username} | Email: {user.Email} | Role: {user.Role}"
+                );
+            }
+        }
+
+
+
+        private void DeleteUser()
+        {
+            Console.Write("User ID: ");
+
+            int id = int.Parse(Console.ReadLine());
+
+
+            _userRepository.DeleteUser(id);
+
+
+            Console.WriteLine("User deleted");
         }
     }
 }

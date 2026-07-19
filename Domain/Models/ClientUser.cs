@@ -8,12 +8,18 @@ namespace Domain.Models
 {
     public class ClientUser : User
     {
-        public decimal Balance { get; protected set; }
+      
 
-        public ClientUser(int id, string username, string password, decimal balance, Role role)
+        public ClientUser(
+     int id,
+     string username,
+     string email,
+     string password,
+     decimal balance)
         {
             Id = id;
             Username = username;
+            Email = email;
             Password = password;
             Role = Role.Client;
             Balance = balance;

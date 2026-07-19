@@ -15,57 +15,7 @@ using UI.Menus;
         {
             static void Main(string[] args)
             {
-
-                
-                UserRepository repository = new UserRepository();
-
-
-                
-                DataInitializer.CreateAdmin(repository);
-
-
-
-                
-                EmailService emailService = new EmailService();
-
-
-                ILoggerService logger = new LoggerService();
-
-                ITransactionRepository transactionRepository =
-                    new TransactionRepository();
-
-
-
-                
-                UserService userService =
-                    new UserService(
-                        repository,
-                        emailService,
-                        transactionRepository,
-                        logger
-                    );
-
-
-
-                LoanRepository loanRepository =
-                    new LoanRepository();
-
-
-
-                LoanService loanService =
-                    new LoanService(
-                        loanRepository,
-                        repository
-                    );
-
-
-
-                MainMenu menu =
-                    new MainMenu(
-                        userService,
-                        loanService
-                    );
-
+                var menu = ServiceContainer.CreateMainMenu();
 
                 menu.Show();
             }

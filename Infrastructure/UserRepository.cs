@@ -1,11 +1,12 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Enums;
+using Domain.Interfaces;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Linq;
-using System.IO;
 namespace Infrastructure
 {
     public class UserRepository : IUserDataManager
@@ -13,15 +14,33 @@ namespace Infrastructure
         private readonly string _filePath = "C:\\Users\\Nia Tsalkalamanidze\\Desktop\\N\\Step\\ATM_Project\\Infrastructure\\Data\\Users.txt";
         public void CreateUser(User user)
         {
-            string line = JsonSerializer.Serialize(user);
-            File.AppendAllLines(_filePath, new[] {line});
-        }
+            string line = JsonSerializer.Serialize(
+                user,
+                user.GetType()
+            );
 
+            File.AppendAllLines(
+                _filePath,
+                new[] { line }
+            );
+        }
         public void DeleteUser(int id)
         {
-            throw new NotImplementedException();
-        }
+            List<User> users = GetAllUsers();
 
+            User user = users.FirstOrDefault(x => x.Id == id);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+
+            users.Remove(user);
+
+
+            SaveChanges(users);
+        }
         public List<User> GetAllUsers()
         {
             if (!File.Exists(_filePath))
@@ -36,8 +55,23 @@ namespace Infrastructure
             foreach (string line in lines)
             {
                 if (string.IsNullOrEmpty(line)) continue;
+                User user;
 
-                User user = JsonSerializer.Deserialize<User>(line);
+                var json = JsonDocument.Parse(line);
+
+                var role = json.RootElement.GetProperty("Role").GetInt32();
+
+
+                if (role == (int)Role.Client)
+                {
+                    user = JsonSerializer.Deserialize<ClientUser>(line);
+                }
+                else
+                {
+                    user = JsonSerializer.Deserialize<AdminUser>(line);
+                }
+
+
                 users.Add(user);
             }
 
@@ -73,8 +107,15 @@ namespace Infrastructure
         public void SaveChanges(List<User> users)
         {
             File.Delete(_filePath);
-            File.AppendAllLines(_filePath, users.Select(x => JsonSerializer.Serialize(x)));
 
+            File.AppendAllLines(
+                _filePath,
+                users.Select(x =>
+                    JsonSerializer.Serialize(
+                        x,
+                        x.GetType()
+                    ))
+            );
         }
 
         public void UpdateUser(User user)
