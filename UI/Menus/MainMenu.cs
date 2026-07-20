@@ -1,5 +1,6 @@
 ﻿using Application.Services;
 using Domain.Enums;
+using Domain.Exceptions;
 using Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,8 @@ namespace UI.Menus
 {
     public class MainMenu
     {
-        
-            private readonly UserService _userService;
+
+        private readonly UserService _userService;
         private readonly LoanService _loanService;
 
         public MainMenu(
@@ -23,44 +24,46 @@ namespace UI.Menus
 
 
         public void Show()
+        {
+            while (true)
             {
-                while (true)
+                Console.WriteLine("\n--- ATM SYSTEM ---");
+                Console.WriteLine("1. Register");
+                Console.WriteLine("2. Login");
+                Console.WriteLine("0. Exit");
+
+
+                string choice = Console.ReadLine();
+
+
+                switch (choice)
                 {
-                    Console.WriteLine("\n--- ATM SYSTEM ---");
-                    Console.WriteLine("1. Register");
-                    Console.WriteLine("2. Login");
-                    Console.WriteLine("0. Exit");
+                    case "1":
+                        Register();
+                        break;
 
 
-                    string choice = Console.ReadLine();
+                    case "2":
+                        Login();
+                        break;
 
 
-                    switch (choice)
-                    {
-                        case "1":
-                            Register();
-                            break;
+                    case "0":
+                        return;
 
 
-                        case "2":
-                            Login();
-                            break;
-
-
-                        case "0":
-                            return;
-
-
-                        default:
-                            Console.WriteLine("Wrong option");
-                            break;
-                    }
+                    default:
+                        Console.WriteLine("Wrong option");
+                        break;
                 }
             }
+        }
 
 
 
-            private void Register()
+        private void Register()
+        {
+            try
             {
                 Console.Write("Username: ");
                 string username = Console.ReadLine();
@@ -80,21 +83,28 @@ namespace UI.Menus
                     password
                 );
 
-            Console.WriteLine("Enter verification code:");
-            string code = Console.ReadLine();
+                Console.WriteLine("Enter verification code:");
+                string code = Console.ReadLine();
 
-            bool isVerified = _userService.VerifyUser(email, code);
+                bool isVerified = _userService.VerifyUser(email, code);
 
-            if (isVerified)
-                Console.WriteLine("Account verified!");
-            else
-                Console.WriteLine("Wrong code!");
+                if (isVerified)
+                    Console.WriteLine("Account verified!");
+                else
+                    Console.WriteLine("Wrong code!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
-            
 
 
 
-            private void Login()
+
+        private void Login()
+        {
+            try
             {
                 Console.Write("Email: ");
                 string email = Console.ReadLine();
@@ -114,27 +124,36 @@ namespace UI.Menus
                     $"Welcome {user.Username}"
                 );
 
-            if (user.Role == Role.Admin)
-            {
-                AdminMenu menu =
-     new AdminMenu(
+                if (user.Role == Role.Admin)
+                {
+                    AdminMenu menu =
+         new AdminMenu(
+             _loanService,
+             new UserRepository()
+         );
+
+                    menu.Show();
+                }
+                else
+                {
+                    ClientMenu menu = new ClientMenu(
+         _userService,
          _loanService,
-         new UserRepository()
+         user
      );
 
-                menu.Show();
+                    menu.Show();
+                }
             }
-            else
+            catch (AppException ex)
             {
-                ClientMenu menu = new ClientMenu(
-     _userService,
-     _loanService,
-     user
- );
-
-                menu.Show();
+                Console.WriteLine(ex.Message);
             }
-        }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unexpected error: " + ex.Message);
+            }
         }
     }
+}
 

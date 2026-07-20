@@ -31,8 +31,8 @@ namespace UI.Menus
                 Console.WriteLine("1. Check Balance");
                 Console.WriteLine("2. Deposit");
                 Console.WriteLine("3. Withdraw");
-                Console.WriteLine("4. Logout");
-                Console.WriteLine("5. Request Loan");
+                Console.WriteLine("4. Request Loan");
+                Console.WriteLine("5. Logout");
                 Console.Write("Choose option: ");
 
                 string choice = Console.ReadLine();
@@ -55,14 +55,15 @@ namespace UI.Menus
                             break;
 
                         case "4":
+                            RequestLoan();
+                            break;
+
+                        case "5":
+                         
                             _userService.LogoutUser(_currentUser.Email);
                             Console.WriteLine("Logged out");
                             return;
 
-                        case "5":
-                            RequestLoan();
-                            break;
-                      
 
                         default:
                             Console.WriteLine("Wrong option");

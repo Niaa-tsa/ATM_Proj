@@ -37,7 +37,7 @@ namespace Application.Services
 
             var existingUser = _userDataManager.GetUserByEmail(email);
             if (existingUser != null)
-                throw new Exception("User already exists");
+                throw new UserAlreadyExistsException();
 
 
             var verificationCode = new Random().Next(1000, 9999).ToString();
@@ -56,6 +56,7 @@ namespace Application.Services
 
             newUser.IsVerified = false;
             newUser.VerificationCode = verificationCode;
+            newUser.VerificationExpiry = DateTime.Now.AddMinutes(5);
             _userDataManager.CreateUser(newUser);
             _logger.Log($"New user registered: {email}");
             SendVerificationCode(email, verificationCode);
@@ -68,17 +69,20 @@ namespace Application.Services
         public bool VerifyUser(string email, string verificationCode)
         {
             User user = _userDataManager.GetUserByEmail(email);
+
             if (user == null)
-            {
-       
-                throw new ArgumentException("user not found ");
-            }
+                throw new UserNotFoundException();
+
+            if (DateTime.Now > user.VerificationExpiry)
+                throw new Exception("Verification code expired");
+
             if (user.VerificationCode == verificationCode)
             {
                 user.IsVerified = true;
                 _userDataManager.UpdateUser(user);
                 return true;
             }
+
             return false;
         }
         public User LoginUser(string email, string password)
@@ -96,7 +100,7 @@ namespace Application.Services
                     return us;
                 }
             }
-            throw new Exception("Invalid email or not verified");
+            throw new InvalidCredentialsException();
         }
 
         public void LogoutUser(string email)
@@ -126,8 +130,7 @@ namespace Application.Services
             var user = _userDataManager.GetUserByEmail(email);
 
             if (user == null)
-                throw new Exception("User not found");
-
+                throw new UserNotFoundException();
 
             if (user is ClientUser client)
             {
@@ -150,9 +153,8 @@ namespace Application.Services
 
 
             var user = _userDataManager.GetUserByEmail(email);
-
             if (user == null)
-                throw new Exception("User not found");
+                throw new UserNotFoundException();
 
 
             if (user is ClientUser client)

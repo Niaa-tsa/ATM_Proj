@@ -29,7 +29,8 @@ namespace Application.Services
             if (amount <= 0)
                 throw new InvalidAmountException("Amount must be greater than 0");
 
-
+            if (amount > 10000)
+                throw new InvalidAmountException("Loan limit exceeded");
             LoanRequest loan =
             new LoanRequest
             {
@@ -57,7 +58,7 @@ namespace Application.Services
 
 
             if (loan == null)
-                throw new Exception("Loan not found");
+                throw new LoanNotFoundException();
 
 
             loan.Status = LoanStatus.Rejected;
@@ -74,7 +75,7 @@ namespace Application.Services
 
 
             if (loan == null)
-                throw new Exception("Loan not found");
+                throw new LoanNotFoundException();
 
 
             var user =
@@ -82,7 +83,7 @@ namespace Application.Services
 
 
             if (user == null)
-                throw new Exception("User not found");
+                throw new UserNotFoundException();
 
             if (user is ClientUser client)
             {

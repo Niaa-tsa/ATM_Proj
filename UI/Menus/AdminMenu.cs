@@ -93,34 +93,48 @@ namespace UI.Menus
 
         private void ApproveLoan()
         {
-            Console.Write("Loan ID: ");
-
-            if (!int.TryParse(Console.ReadLine(), out int id))
+            try
             {
-                Console.WriteLine("Invalid ID");
-                return;
+                Console.Write("Loan ID: ");
+
+                if (!int.TryParse(Console.ReadLine(), out int id))
+                {
+                    Console.WriteLine("Invalid ID");
+                    return;
+                }
+
+                _loanService.ApproveLoan(id);
+
+                Console.WriteLine("Loan approved");
             }
-
-            _loanService.ApproveLoan(id);
-
-            Console.WriteLine("Loan approved");
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
 
 
         private void RejectLoan()
         {
-            Console.Write("Loan ID: ");
-
-            if (!int.TryParse(Console.ReadLine(), out int id))
+            try
             {
-                Console.WriteLine("Invalid ID");
-                return;
+                Console.Write("Loan ID: ");
+
+                if (!int.TryParse(Console.ReadLine(), out int id))
+                {
+                    Console.WriteLine("Invalid ID");
+                    return;
+                }
+
+                _loanService.RejectLoan(id);
+
+                Console.WriteLine("Loan rejected");
             }
-
-            _loanService.RejectLoan(id);
-
-            Console.WriteLine("Loan rejected");
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void ViewUsers()
@@ -140,15 +154,23 @@ namespace UI.Menus
 
         private void DeleteUser()
         {
-            Console.Write("User ID: ");
 
-            int id = int.Parse(Console.ReadLine());
+            try
+            {
+                Console.Write("User ID: ");
+
+                int id = int.Parse(Console.ReadLine());
 
 
-            _userRepository.DeleteUser(id);
+                _userRepository.DeleteUser(id);
 
 
-            Console.WriteLine("User deleted");
+                Console.WriteLine("User deleted");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

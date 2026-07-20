@@ -14,13 +14,19 @@ namespace Application.Services
 
         public void Log(string message)
         {
-            string ip = GetUserIp();
-            using (StreamWriter sw = new StreamWriter(path, true))
+            try
             {
-                sw.WriteLine($"[{DateTime.Now} - IP {ip}]" + message);
+                string ip = GetUserIp();
+                using (StreamWriter sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine($"[{DateTime.Now} - IP {ip}]" + message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Logging failed: " + ex.Message);
             }
         }
-
        private string GetUserIp()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());

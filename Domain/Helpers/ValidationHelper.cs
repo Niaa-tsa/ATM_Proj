@@ -13,8 +13,10 @@ namespace Domain.Helpers
 
             public static bool IsValidEmail(string email)
             {
-                return !string.IsNullOrWhiteSpace(email) && email.Contains("@");
-            }
+            return !string.IsNullOrWhiteSpace(email)
+             && email.Contains("@")
+             && email.Contains(".");
+        }
 
             public static bool IsValidPassword(string password)
             {
