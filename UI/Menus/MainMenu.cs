@@ -8,6 +8,7 @@ using System.Text;
 
 namespace UI.Menus
 {
+    // პროგრამის მთავარი მენიუ.
     public class MainMenu
     {
 

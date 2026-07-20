@@ -10,6 +10,7 @@ using System.Text;
 
 namespace Application.Services
 {
+    // მომხმარებლის რეგისტრაცია და ავტორიზაცია
     public class UserService : IUserService
     {
         private readonly IUserDataManager _userDataManager;
@@ -24,6 +25,7 @@ namespace Application.Services
             _emailService = emailService;
             _logger = logger;
         }
+        // არეგისტრირებს ახალ მომხმარებელს და უგზავნის ვერიფიკაციის კოდს.
         public void RegisterUser(string username, string email, string password)
         {
             if (!ValidationHelper.IsNotEmpty(username))
@@ -66,6 +68,7 @@ namespace Application.Services
         {
             _emailService.SeeEmail(email, "verification code", verificationCode);
         }
+        // ამოწმებს ვერიფიკაციის კოდს და ააქტიურებს ანგარიშს.
         public bool VerifyUser(string email, string verificationCode)
         {
             User user = _userDataManager.GetUserByEmail(email);
@@ -85,6 +88,7 @@ namespace Application.Services
 
             return false;
         }
+        // მომხმარებლის ავტორიზაცია.
         public User LoginUser(string email, string password)
         {
             User us = _userDataManager.GetUserByEmail(email);
@@ -122,6 +126,7 @@ namespace Application.Services
 
             throw new Exception("User is not a client");
         }
+        // ანგარიშზე თანხის შეტანა.
         public void Deposit(string email, decimal amount)
         {
             if (!ValidationHelper.IsPositive(amount))
@@ -146,6 +151,7 @@ namespace Application.Services
 
             _logger.Log($"{email} deposited {amount}");
         }
+        // ანგარიშიდან თანხის გამოტანა.
         public void Withdraw(string email, decimal amount)
         {
             if (!ValidationHelper.IsPositive(amount))

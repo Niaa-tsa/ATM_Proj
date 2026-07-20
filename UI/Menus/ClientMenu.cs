@@ -7,6 +7,7 @@ using System.Text;
 
 namespace UI.Menus
 {
+    // კლიენტის ფუნქციების მენიუ.
     public class ClientMenu
     {
         private readonly UserService _userService;

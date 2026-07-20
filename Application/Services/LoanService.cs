@@ -5,6 +5,7 @@ using Domain.Models;
 using Infrastructure;
 namespace Application.Services
 {
+    // პასუხისმგებელია სესხების მართვაზე.
     public class LoanService 
     {
         private readonly ILoanRepository _loanRepository;
@@ -20,7 +21,7 @@ namespace Application.Services
         }
 
 
-
+        // ქმნის ახალი სესხის მოთხოვნას.
         public void RequestLoan(
             int userId,
             decimal amount)
@@ -50,6 +51,7 @@ namespace Application.Services
         {
             return _loanRepository.GetAll();
         }
+        // უარყოფს სესხის მოთხოვნას.
         public void RejectLoan(int id)
         {
             var loans = _loanRepository.GetAll();
@@ -66,6 +68,7 @@ namespace Application.Services
 
             _loanRepository.Save(loans);
         }
+        // ამტკიცებს სესხს და თანხას ურიცხავს მომხმარებელს.
         public void ApproveLoan(int id)
         {
 

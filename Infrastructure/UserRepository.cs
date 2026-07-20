@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 namespace Infrastructure
 {
+    // პასუხისმგებელია მომხმარებლების ფაილში შენახვასა და წაკითხვაზე.
     public class UserRepository : IUserDataManager
     {
         private readonly string _filePath = "C:\\Users\\Nia Tsalkalamanidze\\Desktop\\N\\Step\\ATM_Project\\Infrastructure\\Data\\Users.txt";

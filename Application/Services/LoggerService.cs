@@ -8,10 +8,12 @@ using System.IO;
 using System.Linq;
 namespace Application.Services
 {
+    // ინახავს მომხმარებლის მოქმედებებს ლოგ ფაილში.
     public class LoggerService : ILoggerService
     {
         string path = @"C:\Users\Nia Tsalkalamanidze\Desktop\N\Step\ATM_Project\Infrastructure\Data\Logs.txt";
 
+        // წერს შეტყობინებას Logs.txt-ში.
         public void Log(string message)
         {
             try

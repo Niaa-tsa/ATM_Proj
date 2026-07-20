@@ -6,6 +6,7 @@ using System.Text;
 
 namespace UI.Menus
 {
+    // ადმინისტრატორის მართვის მენიუ.
     public class AdminMenu
     {
         public void Show()

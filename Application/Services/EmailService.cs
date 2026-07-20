@@ -9,6 +9,7 @@ namespace Application.Services
 {
     public class EmailService
     {
+        // აგზავნის ელფოსტას SMTP-ის გამოყენებით.
         public void SeeEmail(string to, string subject, string body)
         {
             try

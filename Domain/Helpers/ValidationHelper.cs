@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Domain.Helpers
 {
-    public  class ValidationHelper
+    //  ვალიდაციის დამხმარე მეთოდები.
+    public class ValidationHelper
     {
             public static bool IsPositive(decimal amount)
             {

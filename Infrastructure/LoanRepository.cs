@@ -7,7 +7,8 @@ using System.Text.Json;
 
     namespace Infrastructure
     {
-        public class LoanRepository : ILoanRepository
+    // პასუხისმგებელია სესხების ფაილში შენახვასა და წაკითხვაზე.
+    public class LoanRepository : ILoanRepository
         {
             private readonly string path = "C:\\Users\\Nia Tsalkalamanidze\\Desktop\\N\\Step\\ATM_Project\\Infrastructure\\Data\\Loans.txt";
 

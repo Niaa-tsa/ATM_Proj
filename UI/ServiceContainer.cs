@@ -10,6 +10,7 @@ using UI.Menus;
 
 namespace UI
 {
+    // ქმნის და აკავშირებს პროექტის ყველა საჭირო სერვისს.
     public static class ServiceContainer
     {
         public static MainMenu CreateMainMenu()
