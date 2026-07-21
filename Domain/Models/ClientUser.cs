@@ -42,5 +42,6 @@ namespace Domain.Models
 
             Balance -= amount;
         }
+      
     }
 }

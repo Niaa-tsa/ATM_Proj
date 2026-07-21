@@ -8,7 +8,7 @@ using System.Text;
 namespace UI.Menus
 {
     // კლიენტის ფუნქციების მენიუ.
-    public class ClientMenu
+    public class ClientMenu : BaseMenu
     {
         private readonly UserService _userService;
         private readonly User _currentUser;
@@ -24,7 +24,7 @@ namespace UI.Menus
             _currentUser = currentUser;
         }
 
-        public void Show()
+        public override void Show()
         {
             while (true)
             {

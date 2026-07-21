@@ -20,5 +20,6 @@ namespace Domain.Models
             Role = Role.Admin;
             IsVerified = true;
         }
+ 
     }
 }

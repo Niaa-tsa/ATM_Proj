@@ -49,11 +49,11 @@ namespace UI
                     repository
                 );
 
-
             MainMenu menu =
                 new MainMenu(
                     userService,
-                    loanService
+                    loanService,
+                    repository
                 );
 
 

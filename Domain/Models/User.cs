@@ -17,5 +17,6 @@ namespace Domain.Models
         public DateTime VerificationExpiry { get; set; }
         public decimal Balance { get; set; }
         public DateTime? LastLogin { get; set; }
+     
     }
 }

@@ -1,2 +1,0 @@
-{"Id":1,"UserId":2,"Amount":100,"Status":1}
-{"Id":2,"UserId":2,"Amount":200,"Status":1}

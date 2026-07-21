@@ -1,6 +1,7 @@
 ﻿using Application.Services;
 using Domain.Enums;
 using Domain.Exceptions;
+using Domain.Interfaces;
 using Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -9,18 +10,21 @@ using System.Text;
 namespace UI.Menus
 {
     // პროგრამის მთავარი მენიუ.
-    public class MainMenu
+    public class MainMenu 
     {
 
         private readonly UserService _userService;
         private readonly LoanService _loanService;
+        private readonly IUserDataManager _userRepository;
 
         public MainMenu(
       UserService userService,
-      LoanService loanService)
+      LoanService loanService,
+      IUserDataManager userRepository)
         {
             _userService = userService;
             _loanService = loanService;
+            _userRepository = userRepository;
         }
 
 
@@ -124,27 +128,27 @@ namespace UI.Menus
                 Console.WriteLine(
                     $"Welcome {user.Username}"
                 );
+                BaseMenu menu;
+
 
                 if (user.Role == Role.Admin)
                 {
-                    AdminMenu menu =
-         new AdminMenu(
-             _loanService,
-             new UserRepository()
-         );
-
-                    menu.Show();
+                    menu = new AdminMenu(
+                        _loanService,
+                        new UserRepository()
+                    );
                 }
                 else
                 {
-                    ClientMenu menu = new ClientMenu(
-         _userService,
-         _loanService,
-         user
-     );
-
-                    menu.Show();
+                    menu = new ClientMenu(
+                        _userService,
+                        _loanService,
+                        user
+                    );
                 }
+
+
+                menu.Show();
             }
             catch (AppException ex)
             {

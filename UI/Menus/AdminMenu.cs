@@ -7,9 +7,9 @@ using System.Text;
 namespace UI.Menus
 {
     // ადმინისტრატორის მართვის მენიუ.
-    public class AdminMenu
+    public class AdminMenu : BaseMenu
     {
-        public void Show()
+        public override void Show()
         {
 
             while (true)
