@@ -1,1 +1,1 @@
-{"Id":1,"Username":"admin","Email":"admin@gmail.com","Password":"$2a$11$JyoYLyNQMGwVeb30JmNjcuSoBVhI.JQ.rAWxYgfrwTtEHzcJm3O6e","Role":1,"IsVerified":true,"VerificationCode":null,"VerificationExpiry":"0001-01-01T00:00:00","Balance":0,"LastLogin":null}
+{"Id":1,"Username":"admin","Email":"admin@gmail.com","Password":"$2a$11$JyoYLyNQMGwVeb30JmNjcuSoBVhI.JQ.rAWxYgfrwTtEHzcJm3O6e","Role":1,"IsVerified":true,"VerificationCode":null,"VerificationExpiry":"0001-01-01T00:00:00","Balance":0,"LastLogin":"2026-07-23T18:27:41.8082709+04:00"}

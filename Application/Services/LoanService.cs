@@ -1,4 +1,6 @@
-﻿using Domain.Enums;
+﻿using Application.Interfaces;
+using Application.Interfaces.Application.Interfaces;
+using Domain.Enums;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
@@ -6,20 +8,22 @@ using Infrastructure;
 namespace Application.Services
 {
     // პასუხისმგებელია სესხების მართვაზე.
-    public class LoanService 
+    public class LoanService : ILoanService
     {
         private readonly ILoanRepository _loanRepository;
         private readonly IUserDataManager _userRepository;
+        private readonly ILoggerService _logger;
 
 
         public LoanService(
-         ILoanRepository loanRepository,
-         IUserDataManager userRepository)
+    ILoanRepository loanRepository,
+    IUserDataManager userRepository,
+    ILoggerService logger)
         {
             _loanRepository = loanRepository;
             _userRepository = userRepository;
+            _logger = logger;
         }
-
 
         // ქმნის ახალი სესხის მოთხოვნას.
         public void RequestLoan(
@@ -46,6 +50,7 @@ namespace Application.Services
 
 
             _loanRepository.Add(loan);
+            _logger.Log($"User ID: {userId} requested a loan of {amount}");
         }
         public List<LoanRequest> GetLoans()
         {
@@ -64,7 +69,7 @@ namespace Application.Services
 
 
             loan.Status = LoanStatus.Rejected;
-
+            _logger.Log($"Loan ID: {loan.Id} rejected");
 
             _loanRepository.Save(loans);
         }
@@ -100,11 +105,12 @@ namespace Application.Services
 
 
             loan.Status = LoanStatus.Approved;
+            _logger.Log($"Loan ID: {loan.Id} approved for user {user.Email}. Amount: {loan.Amount}");
 
 
-          
 
             _loanRepository.Save(loans);
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.Application.Interfaces;
 using Application.Services;
 using Domain.Interfaces;
 using Infrastructure;
@@ -23,8 +24,8 @@ namespace UI
             );
 
 
-            EmailService emailService =
-                new EmailService();
+            IEmailService emailService =
+     new EmailService();
 
 
             ILoggerService logger =
@@ -40,13 +41,13 @@ namespace UI
 
 
             ILoanRepository loanRepository =
-                new LoanRepository();
+      new LoanRepository();
 
-
-            LoanService loanService =
+            ILoanService loanService =
                 new LoanService(
                     loanRepository,
-                    repository
+                    repository,
+                    logger
                 );
 
             MainMenu menu =

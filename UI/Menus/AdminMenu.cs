@@ -1,8 +1,10 @@
 ﻿using Application.Services;
 using Domain.Interfaces;
+using Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Application.Interfaces.Application.Interfaces;
 
 namespace UI.Menus
 {
@@ -66,13 +68,13 @@ namespace UI.Menus
             }
 
         }
-        private readonly LoanService _loanService;
+        private readonly ILoanService _loanService;
         private readonly IUserDataManager _userRepository;
 
 
         public AdminMenu(
-            LoanService loanService,
-            IUserDataManager userRepository)
+     ILoanService loanService,
+     IUserDataManager userRepository)
         {
             _loanService = loanService;
             _userRepository = userRepository;

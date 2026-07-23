@@ -14,11 +14,11 @@ namespace Application.Services
     public class UserService : IUserService
     {
         private readonly IUserDataManager _userDataManager;
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly ILoggerService _logger;
         public UserService(
      IUserDataManager userDataManager,
-     EmailService emailService,
+    IEmailService emailService,
      ILoggerService logger)
         {
             _userDataManager = userDataManager;
@@ -61,12 +61,20 @@ namespace Application.Services
             newUser.VerificationExpiry = DateTime.Now.AddMinutes(5);
             _userDataManager.CreateUser(newUser);
             _logger.Log($"New user registered: {email}");
+
             SendVerificationCode(email, verificationCode);
+
+            _logger.Log($"Verification code sent to {email}");
         }
 
-        public void SendVerificationCode(string email, string verificationCode)
+        public void SendVerificationCode(
+    string email,
+    string verificationCode)
         {
-            _emailService.SeeEmail(email, "verification code", verificationCode);
+            _emailService.SendVerificationEmail(
+                email,
+                verificationCode
+            );
         }
         // ამოწმებს ვერიფიკაციის კოდს და ააქტიურებს ანგარიშს.
         public bool VerifyUser(string email, string verificationCode)
@@ -83,10 +91,12 @@ namespace Application.Services
             {
                 user.IsVerified = true;
                 _userDataManager.UpdateUser(user);
+                _logger.Log($"User verified: {email}");
                 return true;
             }
 
             return false;
+            _logger.Log($"Verification failed for {email}");
         }
         // მომხმარებლის ავტორიზაცია.
         public User LoginUser(string email, string password)

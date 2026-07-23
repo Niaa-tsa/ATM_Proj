@@ -1,4 +1,7 @@
-﻿using Application.Services;
+﻿using Application.Interfaces;
+using Application.Interfaces;
+using Application.Interfaces.Application.Interfaces;
+using Application.Services;
 using Domain.Enums;
 using Domain.Exceptions;
 using Domain.Interfaces;
@@ -13,14 +16,14 @@ namespace UI.Menus
     public class MainMenu 
     {
 
-        private readonly UserService _userService;
-        private readonly LoanService _loanService;
+        private readonly IUserService _userService;
+        private readonly ILoanService _loanService;
         private readonly IUserDataManager _userRepository;
 
         public MainMenu(
-      UserService userService,
-      LoanService loanService,
-      IUserDataManager userRepository)
+     IUserService userService,
+     ILoanService loanService,
+     IUserDataManager userRepository)
         {
             _userService = userService;
             _loanService = loanService;
@@ -135,9 +138,10 @@ namespace UI.Menus
                 {
                     menu = new AdminMenu(
                         _loanService,
-                        new UserRepository()
+                        _userRepository
                     );
                 }
+            
                 else
                 {
                     menu = new ClientMenu(

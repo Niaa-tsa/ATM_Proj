@@ -1,22 +1,25 @@
 ﻿using Application.Services;
+using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Application.Interfaces.Application.Interfaces;
 
 namespace UI.Menus
 {
     // კლიენტის ფუნქციების მენიუ.
     public class ClientMenu : BaseMenu
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
+        private readonly ILoanService _loanService;
         private readonly User _currentUser;
-        private readonly LoanService _loanService;
-       
+
+
         public ClientMenu(
-     UserService userService,
-     LoanService loanService,
+     IUserService userService,
+     ILoanService loanService,
      User currentUser)
         {
             _userService = userService;
