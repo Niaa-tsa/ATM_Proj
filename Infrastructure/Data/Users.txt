@@ -1,2 +1,1 @@
 {"Id":1,"Username":"admin","Email":"admin@gmail.com","Password":"$2a$11$xTuRIiQWl3I9YMd.Gve8l.FRHJOypaPTNyFWoRwwPoj2AWh4qTOmS","Role":1,"IsVerified":true,"VerificationCode":null,"VerificationExpiry":"0001-01-01T00:00:00","Balance":0,"LastLogin":"2026-07-24T16:18:27.4046325+04:00"}
-{"Id":2,"Username":"nia","Email":"tsalkalamanidzenia93@gmail.com","Password":"$2a$11$NtREyromKQkJzL7JmXitTulgkdW9Vsp1dgDxdeD40m3x8sgiy7V7S","Role":0,"IsVerified":true,"VerificationCode":"9372","VerificationExpiry":"0001-01-01T00:00:00","Balance":0,"LastLogin":null}
