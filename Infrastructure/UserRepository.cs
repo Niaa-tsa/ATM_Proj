@@ -55,26 +55,45 @@ namespace Infrastructure
 
             foreach (string line in lines)
             {
-                if (string.IsNullOrEmpty(line)) continue;
-                User user;
-
-                var json = JsonDocument.Parse(line);
-
-                var role = json.RootElement.GetProperty("Role").GetInt32();
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
 
 
-                if (role == (int)Role.Client)
+                try
                 {
-                    user = JsonSerializer.Deserialize<ClientUser>(line);
+                    using JsonDocument json = JsonDocument.Parse(line);
+
+
+                    var role = json.RootElement
+                        .GetProperty("Role")
+                        .GetInt32();
+
+
+                    User user;
+
+
+                    if (role == (int)Role.Client)
+                    {
+                        user = JsonSerializer.Deserialize<ClientUser>(line);
+                    }
+                    else if (role == (int)Role.Admin)
+                    {
+                        user = JsonSerializer.Deserialize<AdminUser>(line);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+
+                    users.Add(user);
                 }
-                else
+                catch
                 {
-                    user = JsonSerializer.Deserialize<AdminUser>(line);
+                    continue;
                 }
-
-
-                users.Add(user);
             }
+
 
             return users;
         }
@@ -118,7 +137,18 @@ namespace Infrastructure
                     ))
             );
         }
+        public void DeleteUserByEmail(string email)
+        {
+            var users = GetAllUsers();
 
+            var user = users.FirstOrDefault(x => x.Email == email);
+
+            if (user != null)
+            {
+                users.Remove(user);
+                SaveChanges(users);
+            }
+        }
         public void UpdateUser(User user)
         {
             List<User> users = GetAllUsers();

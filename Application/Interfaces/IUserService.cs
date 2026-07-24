@@ -37,5 +37,9 @@ namespace Application.Interfaces
         void Withdraw(
             string email,
             decimal amount);
+        void ChangePassword(
+            string email,
+            string oldPassword,
+            string newPassword);
     }
 }

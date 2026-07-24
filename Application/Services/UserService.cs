@@ -28,44 +28,40 @@ namespace Application.Services
         // არეგისტრირებს ახალ მომხმარებელს და უგზავნის ვერიფიკაციის კოდს.
         public void RegisterUser(string username, string email, string password)
         {
-            if (!ValidationHelper.IsNotEmpty(username))
-                throw new Exception("Username is required");
-
-            if (!ValidationHelper.IsValidEmail(email))
-                throw new Exception("Invalid email");
-
-            if (!ValidationHelper.IsValidPassword(password))
+            if (password.Length < 4)
                 throw new Exception("Password must be at least 4 characters");
 
-            var existingUser = _userDataManager.GetUserByEmail(email);
-            if (existingUser != null)
+            if (_userDataManager.GetUserByEmail(email) != null)
                 throw new UserAlreadyExistsException();
 
-
-            var verificationCode = new Random().Next(1000, 9999).ToString();
-
-            var users = _userDataManager.GetAllUsers();
-            int newId = users.Count == 0 ? 1 : users.Max(x => x.Id) + 1;
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
 
-            var newUser = new ClientUser(
-      newId,
-      username,
-      email,
-      BCrypt.Net.BCrypt.HashPassword(password),
-      0
-  );
+            var user = new ClientUser(
+                _userDataManager.GetAllUsers().Count + 1,
+                username,
+                email,
+                hashedPassword,
+                0
+            );
 
-            newUser.IsVerified = false;
-            newUser.VerificationCode = verificationCode;
-            newUser.VerificationExpiry = DateTime.Now.AddMinutes(5);
-            _userDataManager.CreateUser(newUser);
-            _logger.Log($"New user registered: {email}");
+            user.IsVerified = false;
 
-            SendVerificationCode(email, verificationCode);
 
-            _logger.Log($"Verification code sent to {email}");
+            string code = new Random()
+                .Next(1000, 9999)
+                .ToString();
+
+
+            user.VerificationCode = code;
+
+
+            _userDataManager.CreateUser(user);
+
+
+            SendVerificationCode(email, code);
         }
+
 
         public void SendVerificationCode(
     string email,
@@ -77,26 +73,21 @@ namespace Application.Services
             );
         }
         // ამოწმებს ვერიფიკაციის კოდს და ააქტიურებს ანგარიშს.
-        public bool VerifyUser(string email, string verificationCode)
+        public bool VerifyUser(string email, string code)
         {
-            User user = _userDataManager.GetUserByEmail(email);
+            var user = _userDataManager.GetUserByEmail(email);
 
             if (user == null)
-                throw new UserNotFoundException();
+                throw new Exception("User not found");
 
-            if (DateTime.Now > user.VerificationExpiry)
-                throw new Exception("Verification code expired");
+            if (user.VerificationCode?.Trim() != code.Trim())
+                return false;
 
-            if (user.VerificationCode == verificationCode)
-            {
-                user.IsVerified = true;
-                _userDataManager.UpdateUser(user);
-                _logger.Log($"User verified: {email}");
-                return true;
-            }
+            user.IsVerified = true; 
 
-            return false;
-            _logger.Log($"Verification failed for {email}");
+            _userDataManager.UpdateUser(user);
+
+            return true;
         }
         // მომხმარებლის ავტორიზაცია.
         public User LoginUser(string email, string password)
@@ -188,6 +179,49 @@ namespace Application.Services
             _logger.Log($"{email} withdrew {amount}");
         }
 
+
+        // პაროლის შეცვლა.
+        public void ChangePassword(
+    string email,
+    string oldPassword,
+    string newPassword)
+        {
+            var user = _userDataManager.GetUserByEmail(email);
+
+            if (user == null)
+                throw new UserNotFoundException();
+
+
+            bool isCorrectPassword =
+                BCrypt.Net.BCrypt.Verify(
+                    oldPassword,
+                    user.Password
+                );
+
+
+            if (!isCorrectPassword)
+                throw new InvalidCredentialsException();
+
+
+            if (newPassword.Length < 4)
+                throw new Exception(
+                    "Password must be at least 4 characters"
+                );
+
+
+            user.Password =
+                BCrypt.Net.BCrypt.HashPassword(
+                    newPassword
+                );
+
+
+            _userDataManager.UpdateUser(user);
+
+
+            _logger.Log(
+                $"{email} changed password"
+            );
+        }
 
     }
 }

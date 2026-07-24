@@ -12,6 +12,7 @@ namespace Domain.Interfaces
         User GetUserByEmail(string email);
         void CreateUser(User user);
         void DeleteUser(int id);
+        void DeleteUserByEmail(string email);
         void UpdateUser(User user);
         void SaveChanges(List<User> users);
         public User GetLastLoggedInUser();

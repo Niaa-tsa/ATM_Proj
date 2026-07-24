@@ -16,7 +16,7 @@ namespace UI.Menus
 
             while (true)
             {
-
+                Console.WriteLine("\n--- ADMIN MENU ---");
                 Console.WriteLine("1. View Loans");
                 Console.WriteLine("2. Approve Loan");
                 Console.WriteLine("3. Reject Loan");

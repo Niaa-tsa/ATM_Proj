@@ -36,7 +36,8 @@ namespace UI.Menus
                 Console.WriteLine("2. Deposit");
                 Console.WriteLine("3. Withdraw");
                 Console.WriteLine("4. Request Loan");
-                Console.WriteLine("5. Logout");
+                Console.WriteLine("5. Change Password");
+                Console.WriteLine("6. Logout");
                 Console.Write("Choose option: ");
 
                 string choice = Console.ReadLine();
@@ -63,7 +64,11 @@ namespace UI.Menus
                             break;
 
                         case "5":
-                         
+                            ChangePassword();
+                            break;
+
+
+                        case "6":
                             _userService.LogoutUser(_currentUser.Email);
                             Console.WriteLine("Logged out");
                             return;
@@ -150,7 +155,27 @@ namespace UI.Menus
             Console.WriteLine(
             "Loan request sent");
         }
-       
+        private void ChangePassword()
+        {
+            Console.Write("Old password: ");
+            string oldPassword = Console.ReadLine();
+
+
+            Console.Write("New password: ");
+            string newPassword = Console.ReadLine();
+
+
+            _userService.ChangePassword(
+                _currentUser.Email,
+                oldPassword,
+                newPassword
+            );
+
+
+            Console.WriteLine(
+                "Password changed successfully"
+            );
         }
+    }
     }
 

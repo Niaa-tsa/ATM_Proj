@@ -38,6 +38,7 @@ namespace UI.Menus
                 Console.WriteLine("\n--- ATM SYSTEM ---");
                 Console.WriteLine("1. Register");
                 Console.WriteLine("2. Login");
+                Console.WriteLine("3. Verify Account");
                 Console.WriteLine("0. Exit");
 
 
@@ -55,6 +56,9 @@ namespace UI.Menus
                         Login();
                         break;
 
+                    case "3":
+                        Verify();
+                        break;
 
                     case "0":
                         return;
@@ -91,7 +95,22 @@ namespace UI.Menus
                     password
                 );
 
-                Console.WriteLine("Enter verification code:");
+                Console.WriteLine("Verification code was sent to email.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void Verify()
+        {
+            try
+            {
+                Console.Write("Email: ");
+                string email = Console.ReadLine();
+
+                Console.Write("Code: ");
                 string code = Console.ReadLine();
 
                 bool isVerified = _userService.VerifyUser(email, code);
@@ -106,8 +125,6 @@ namespace UI.Menus
                 Console.WriteLine(ex.Message);
             }
         }
-
-
 
 
         private void Login()
@@ -141,15 +158,22 @@ namespace UI.Menus
                         _userRepository
                     );
                 }
-            
                 else
                 {
+                    if (!user.IsVerified)
+                    {
+                        Console.WriteLine("Account is not verified!");
+                        return;
+                    }
+
+
                     menu = new ClientMenu(
                         _userService,
                         _loanService,
                         user
                     );
                 }
+            
 
 
                 menu.Show();
